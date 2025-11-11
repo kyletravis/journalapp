@@ -3,9 +3,11 @@
 import { useState } from 'react';
 import { JournalEntry, Folder } from '@/hooks/useLocalStorage';
 import { format } from 'date-fns';
+import SearchFilter from './SearchFilter';
 
 interface SidebarProps {
   entries: JournalEntry[];
+  filteredEntries: JournalEntry[];
   folders: Folder[];
   selectedEntryId: string | null;
   selectedFolderId: string | undefined;
@@ -18,10 +20,18 @@ interface SidebarProps {
   onRenameFolder: (id: string, newName: string) => void;
   onMoveEntry: (entryId: string, folderId: string | undefined) => void;
   getEntriesByFolder: (folderId: string | undefined) => JournalEntry[];
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
+  startDate: string;
+  endDate: string;
+  onStartDateChange: (date: string) => void;
+  onEndDateChange: (date: string) => void;
+  onResetFilters: () => void;
 }
 
 export default function Sidebar({
   entries,
+  filteredEntries,
   folders,
   selectedEntryId,
   selectedFolderId,
@@ -34,6 +44,13 @@ export default function Sidebar({
   onRenameFolder,
   onMoveEntry,
   getEntriesByFolder,
+  searchQuery,
+  onSearchChange,
+  startDate,
+  endDate,
+  onStartDateChange,
+  onEndDateChange,
+  onResetFilters,
 }: SidebarProps) {
   const [isCreatingFolder, setIsCreatingFolder] = useState(false);
   const [newFolderName, setNewFolderName] = useState('');
@@ -85,6 +102,17 @@ export default function Sidebar({
           + New Entry
         </button>
       </div>
+
+      {/* Search and Filter */}
+      <SearchFilter
+        searchQuery={searchQuery}
+        onSearchChange={onSearchChange}
+        startDate={startDate}
+        endDate={endDate}
+        onStartDateChange={onStartDateChange}
+        onEndDateChange={onEndDateChange}
+        onReset={onResetFilters}
+      />
 
       {/* Folders and Entries List */}
       <div className="flex-1 overflow-y-auto p-4">
@@ -363,19 +391,27 @@ export default function Sidebar({
         {/* Entries Section */}
         <div>
           <h2 className="text-sm font-bold text-slate-700 uppercase tracking-wide mb-3">
-            {selectedFolderId ? 'Folder Entries' : 'All Entries'}
+            {selectedFolderId ? 'Folder Entries' : 'All Entries'} ({filteredEntries.length})
           </h2>
 
-          {entriesInSelectedFolder.length === 0 ? (
+          {filteredEntries.length === 0 ? (
             <div className="text-center text-slate-400 mt-8 px-4">
               <p className="text-sm">
-                {selectedFolderId ? 'No entries in this folder.' : 'No entries yet.'}
+                {searchQuery || startDate || endDate
+                  ? 'No entries match your search/filter.'
+                  : selectedFolderId
+                  ? 'No entries in this folder.'
+                  : 'No entries yet.'}
               </p>
-              <p className="text-xs mt-2">Create your first journal entry!</p>
+              <p className="text-xs mt-2">
+                {searchQuery || startDate || endDate
+                  ? 'Try adjusting your filters.'
+                  : 'Create your first journal entry!'}
+              </p>
             </div>
           ) : (
             <div className="space-y-2">
-              {entriesInSelectedFolder.map((entry) => (
+              {filteredEntries.map((entry) => (
                 <div
                   key={entry.id}
                   className={`group relative p-4 rounded-lg cursor-pointer transition-all duration-200 ${
