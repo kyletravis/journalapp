@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { JournalEntry } from '@/hooks/useLocalStorage';
+import ShareButtons from './ShareButtons';
 
 interface MarkdownEditorProps {
   entry: JournalEntry | null;
@@ -133,15 +134,20 @@ export default function MarkdownEditor({ entry, onSave }: MarkdownEditorProps) {
       </div>
 
       {/* Footer Info */}
-      <div className="border-t border-slate-200 bg-slate-50 px-8 py-3 text-sm text-slate-500 flex justify-between">
-        <span>
-          Created: {new Date(entry.createdAt).toLocaleDateString()} at{' '}
-          {new Date(entry.createdAt).toLocaleTimeString()}
-        </span>
-        <span>
-          Last updated: {new Date(entry.updatedAt).toLocaleDateString()} at{' '}
-          {new Date(entry.updatedAt).toLocaleTimeString()}
-        </span>
+      <div className="border-t border-slate-200 bg-slate-50 px-8 py-4">
+        <div className="flex justify-between items-center mb-3">
+          <span className="text-sm text-slate-500">
+            Created: {new Date(entry.createdAt).toLocaleDateString()} at{' '}
+            {new Date(entry.createdAt).toLocaleTimeString()}
+          </span>
+          <span className="text-sm text-slate-500">
+            Last updated: {new Date(entry.updatedAt).toLocaleDateString()} at{' '}
+            {new Date(entry.updatedAt).toLocaleTimeString()}
+          </span>
+        </div>
+        <div className="flex justify-center">
+          <ShareButtons title={title} content={content} />
+        </div>
       </div>
     </div>
   );
