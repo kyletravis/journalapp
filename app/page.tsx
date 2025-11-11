@@ -6,9 +6,22 @@ import MarkdownEditor from '@/components/MarkdownEditor';
 import { useLocalStorage, JournalEntry } from '@/hooks/useLocalStorage';
 
 export default function Home() {
-  const { entries, saveEntry, deleteEntry, getEntry, isLoaded } = useLocalStorage();
+  const {
+    entries,
+    folders,
+    saveEntry,
+    deleteEntry,
+    getEntry,
+    createFolder,
+    deleteFolder,
+    renameFolder,
+    moveEntry,
+    getEntriesByFolder,
+    isLoaded,
+  } = useLocalStorage();
   const [selectedEntryId, setSelectedEntryId] = useState<string | null>(null);
   const [selectedEntry, setSelectedEntry] = useState<JournalEntry | null>(null);
+  const [selectedFolderId, setSelectedFolderId] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     if (selectedEntryId) {
@@ -24,6 +37,7 @@ export default function Home() {
       content: '',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
+      folderId: selectedFolderId,
     };
     saveEntry(newEntry);
     setSelectedEntryId(newEntry.id);
@@ -60,10 +74,18 @@ export default function Home() {
     <div className="flex h-screen overflow-hidden">
       <Sidebar
         entries={entries}
+        folders={folders}
         selectedEntryId={selectedEntryId}
+        selectedFolderId={selectedFolderId}
         onSelectEntry={handleSelectEntry}
+        onSelectFolder={setSelectedFolderId}
         onNewEntry={handleNewEntry}
         onDeleteEntry={handleDeleteEntry}
+        onCreateFolder={createFolder}
+        onDeleteFolder={deleteFolder}
+        onRenameFolder={renameFolder}
+        onMoveEntry={moveEntry}
+        getEntriesByFolder={getEntriesByFolder}
       />
       <MarkdownEditor entry={selectedEntry} onSave={handleSaveEntry} />
     </div>
