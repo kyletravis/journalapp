@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Sidebar from '@/components/Sidebar';
 import MarkdownEditor from '@/components/MarkdownEditor';
+import ThemeToggle from '@/components/ThemeToggle';
 import { useLocalStorage, JournalEntry } from '@/hooks/useLocalStorage';
 
 export default function Home() {
@@ -61,17 +62,17 @@ export default function Home() {
 
   if (!isLoaded) {
     return (
-      <div className="flex items-center justify-center h-screen bg-slate-50">
+      <div className="flex items-center justify-center h-screen bg-slate-50 dark:bg-slate-900">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-          <p className="mt-4 text-slate-600">Loading your journal...</p>
+          <p className="mt-4 text-slate-600 dark:text-slate-300">Loading your journal...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen overflow-hidden relative">
       <Sidebar
         entries={entries}
         folders={folders}
@@ -88,6 +89,9 @@ export default function Home() {
         getEntriesByFolder={getEntriesByFolder}
       />
       <MarkdownEditor entry={selectedEntry} onSave={handleSaveEntry} />
+      <div className="absolute top-4 right-4 z-10">
+        <ThemeToggle />
+      </div>
     </div>
   );
 }

@@ -74,13 +74,13 @@ export default function Sidebar({
   const rootEntries = getEntriesByFolder(undefined);
 
   return (
-    <div className="w-80 bg-gradient-to-b from-slate-50 to-slate-100 border-r border-slate-200 flex flex-col h-screen">
+    <div className="w-80 bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 border-r border-slate-200 dark:border-slate-700 flex flex-col h-screen">
       {/* Header */}
-      <div className="p-6 border-b border-slate-200">
-        <h1 className="text-2xl font-bold text-slate-800 mb-4">My Journal</h1>
+      <div className="p-6 border-b border-slate-200 dark:border-slate-700">
+        <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-4">My Journal</h1>
         <button
           onClick={onNewEntry}
-          className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+          className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 dark:from-blue-600 dark:to-blue-700 dark:hover:from-blue-700 dark:hover:to-blue-800 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
         >
           + New Entry
         </button>
@@ -91,10 +91,10 @@ export default function Sidebar({
         {/* Folder Management Section */}
         <div className="mb-6">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-sm font-bold text-slate-700 uppercase tracking-wide">Folders</h2>
+            <h2 className="text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wide">Folders</h2>
             <button
               onClick={() => setIsCreatingFolder(true)}
-              className="text-blue-500 hover:text-blue-700 transition-colors"
+              className="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
               title="Create new folder"
             >
               <svg
@@ -110,7 +110,7 @@ export default function Sidebar({
           </div>
 
           {isCreatingFolder && (
-            <div className="mb-3 p-3 bg-white rounded-lg border border-blue-300">
+            <div className="mb-3 p-3 bg-white dark:bg-slate-800 rounded-lg border border-blue-300 dark:border-blue-600">
               <input
                 type="text"
                 value={newFolderName}
@@ -124,12 +124,12 @@ export default function Sidebar({
                 }}
                 placeholder="Folder name..."
                 autoFocus
-                className="w-full px-2 py-1 text-sm border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-2 py-1 text-sm border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <div className="flex gap-2 mt-2">
                 <button
                   onClick={handleCreateFolder}
-                  className="flex-1 px-2 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600"
+                  className="flex-1 px-2 py-1 text-sm bg-blue-500 dark:bg-blue-600 text-white rounded hover:bg-blue-600 dark:hover:bg-blue-700"
                 >
                   Create
                 </button>
@@ -138,7 +138,7 @@ export default function Sidebar({
                     setIsCreatingFolder(false);
                     setNewFolderName('');
                   }}
-                  className="flex-1 px-2 py-1 text-sm bg-slate-300 text-slate-700 rounded hover:bg-slate-400"
+                  className="flex-1 px-2 py-1 text-sm bg-slate-300 dark:bg-slate-600 text-slate-700 dark:text-slate-200 rounded hover:bg-slate-400 dark:hover:bg-slate-500"
                 >
                   Cancel
                 </button>
@@ -150,8 +150,8 @@ export default function Sidebar({
           <div
             className={`p-3 rounded-lg cursor-pointer transition-all duration-200 mb-2 ${
               selectedFolderId === undefined
-                ? 'bg-blue-100 text-blue-700 font-semibold'
-                : 'hover:bg-slate-200 text-slate-700'
+                ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 font-semibold'
+                : 'hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300'
             }`}
             onClick={() => onSelectFolder(undefined)}
           >
@@ -172,7 +172,7 @@ export default function Sidebar({
                 </svg>
                 <span className="text-sm">All Entries</span>
               </div>
-              <span className="text-xs bg-slate-300 px-2 py-0.5 rounded-full">
+              <span className="text-xs bg-slate-300 dark:bg-slate-600 text-slate-700 dark:text-slate-200 px-2 py-0.5 rounded-full">
                 {entries.length}
               </span>
             </div>
@@ -191,8 +191,8 @@ export default function Sidebar({
                   <div
                     className={`group flex items-center justify-between p-3 rounded-lg cursor-pointer transition-all duration-200 ${
                       isSelected
-                        ? 'bg-blue-100 text-blue-700'
-                        : 'hover:bg-slate-200 text-slate-700'
+                        ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
+                        : 'hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300'
                     }`}
                   >
                     <div className="flex items-center gap-2 flex-1 min-w-0">
@@ -234,7 +234,7 @@ export default function Sidebar({
                           }}
                           onClick={(e) => e.stopPropagation()}
                           autoFocus
-                          className="flex-1 min-w-0 px-2 py-1 text-sm border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="flex-1 min-w-0 px-2 py-1 text-sm border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                       ) : (
                         <>
@@ -257,7 +257,7 @@ export default function Sidebar({
                     </div>
 
                     <div className="flex items-center gap-1 ml-2 flex-shrink-0">
-                      <span className="text-xs bg-slate-300 px-2 py-0.5 rounded-full whitespace-nowrap">
+                      <span className="text-xs bg-slate-300 dark:bg-slate-600 text-slate-700 dark:text-slate-200 px-2 py-0.5 rounded-full whitespace-nowrap">
                         {folderEntries.length}
                       </span>
                       <button
@@ -266,7 +266,7 @@ export default function Sidebar({
                           setRenamingFolderId(folder.id);
                           setRenamingFolderName(folder.name);
                         }}
-                        className="opacity-0 group-hover:opacity-100 text-slate-500 hover:text-slate-700 transition-opacity p-1"
+                        className="opacity-0 group-hover:opacity-100 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-opacity p-1"
                         title="Rename folder"
                       >
                         <svg
@@ -288,7 +288,7 @@ export default function Sidebar({
                             }
                           }
                         }}
-                        className="opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-700 transition-opacity p-1"
+                        className="opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-opacity p-1"
                         title="Delete folder"
                       >
                         <svg
@@ -309,17 +309,17 @@ export default function Sidebar({
 
                   {/* Expanded Folder Entries */}
                   {isExpanded && (
-                    <div className="ml-4 mt-2 space-y-1 border-l-2 border-slate-300 pl-2">
+                    <div className="ml-4 mt-2 space-y-1 border-l-2 border-slate-300 dark:border-slate-600 pl-2">
                       {folderEntries.length === 0 ? (
-                        <div className="text-xs text-slate-400 py-2">No entries</div>
+                        <div className="text-xs text-slate-400 dark:text-slate-500 py-2">No entries</div>
                       ) : (
                         folderEntries.map((entry) => (
                           <div
                             key={entry.id}
                             className={`group relative p-2 rounded text-sm cursor-pointer transition-all duration-200 ${
                               selectedEntryId === entry.id
-                                ? 'bg-blue-50 text-blue-700 font-semibold'
-                                : 'hover:bg-slate-200 text-slate-700'
+                                ? 'bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-300 font-semibold'
+                                : 'hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300'
                             }`}
                             onClick={() => onSelectEntry(entry.id)}
                           >
@@ -332,7 +332,7 @@ export default function Sidebar({
                                     onDeleteEntry(entry.id);
                                   }
                                 }}
-                                className="opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-700 transition-opacity flex-shrink-0"
+                                className="opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-opacity flex-shrink-0"
                                 title="Delete entry"
                               >
                                 <svg
@@ -362,12 +362,12 @@ export default function Sidebar({
 
         {/* Entries Section */}
         <div>
-          <h2 className="text-sm font-bold text-slate-700 uppercase tracking-wide mb-3">
+          <h2 className="text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wide mb-3">
             {selectedFolderId ? 'Folder Entries' : 'All Entries'}
           </h2>
 
           {entriesInSelectedFolder.length === 0 ? (
-            <div className="text-center text-slate-400 mt-8 px-4">
+            <div className="text-center text-slate-400 dark:text-slate-500 mt-8 px-4">
               <p className="text-sm">
                 {selectedFolderId ? 'No entries in this folder.' : 'No entries yet.'}
               </p>
@@ -380,13 +380,13 @@ export default function Sidebar({
                   key={entry.id}
                   className={`group relative p-4 rounded-lg cursor-pointer transition-all duration-200 ${
                     selectedEntryId === entry.id
-                      ? 'bg-white shadow-md ring-2 ring-blue-500'
-                      : 'bg-white/50 hover:bg-white hover:shadow-md'
+                      ? 'bg-white dark:bg-slate-800 shadow-md ring-2 ring-blue-500 dark:ring-blue-400'
+                      : 'bg-white/50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 hover:shadow-md'
                   }`}
                   onClick={() => onSelectEntry(entry.id)}
                 >
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="font-semibold text-slate-800 truncate flex-1 pr-2">
+                    <h3 className="font-semibold text-slate-800 dark:text-slate-100 truncate flex-1 pr-2">
                       {entry.title || 'Untitled'}
                     </h3>
                     <div className="flex items-center gap-2 flex-shrink-0">
@@ -394,7 +394,7 @@ export default function Sidebar({
                         onClick={(e) => e.stopPropagation()}
                         onChange={(e) => onMoveEntry(entry.id, e.target.value || undefined)}
                         value={entry.folderId || ''}
-                        className="text-xs px-2 py-1 border border-slate-300 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="text-xs px-2 py-1 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 rounded opacity-0 group-hover:opacity-100 transition-opacity"
                         title="Move to folder"
                       >
                         <option value="">Move to root</option>
@@ -411,7 +411,7 @@ export default function Sidebar({
                             onDeleteEntry(entry.id);
                           }
                         }}
-                        className="opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-700 transition-opacity"
+                        className="opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-opacity"
                         title="Delete entry"
                       >
                         <svg
@@ -429,10 +429,10 @@ export default function Sidebar({
                       </button>
                     </div>
                   </div>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
                     {format(new Date(entry.updatedAt), 'MMM d, yyyy')}
                   </p>
-                  <p className="text-sm text-slate-600 mt-2 line-clamp-2">
+                  <p className="text-sm text-slate-600 dark:text-slate-400 mt-2 line-clamp-2">
                     {entry.content.substring(0, 100) || 'No content'}
                   </p>
                 </div>
