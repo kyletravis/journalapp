@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Sidebar from '@/components/Sidebar';
-import MarkdownEditor from '@/components/MarkdownEditor';
+import RichTextEditor from '@/components/RichTextEditor';
 import { useLocalStorage, JournalEntry } from '@/hooks/useLocalStorage';
 
 export default function Home() {
@@ -87,7 +87,7 @@ export default function Home() {
         onMoveEntry={moveEntry}
         getEntriesByFolder={getEntriesByFolder}
       />
-      <MarkdownEditor entry={selectedEntry} onSave={handleSaveEntry} />
+      <RichTextEditor entry={selectedEntry} onSave={handleSaveEntry} />
     </div>
   );
 }
