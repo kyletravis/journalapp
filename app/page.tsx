@@ -9,6 +9,7 @@ export default function Home() {
   const {
     entries,
     folders,
+    categories,
     saveEntry,
     deleteEntry,
     getEntry,
@@ -17,6 +18,10 @@ export default function Home() {
     renameFolder,
     moveEntry,
     getEntriesByFolder,
+    addTagToEntry,
+    removeTagFromEntry,
+    setEntryCategory,
+    createCategory,
     isLoaded,
   } = useLocalStorage();
   const [selectedEntryId, setSelectedEntryId] = useState<string | null>(null);
@@ -38,6 +43,8 @@ export default function Home() {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       folderId: selectedFolderId,
+      tags: [],
+      category: undefined,
     };
     saveEntry(newEntry);
     setSelectedEntryId(newEntry.id);
@@ -87,7 +94,15 @@ export default function Home() {
         onMoveEntry={moveEntry}
         getEntriesByFolder={getEntriesByFolder}
       />
-      <MarkdownEditor entry={selectedEntry} onSave={handleSaveEntry} />
+      <MarkdownEditor
+        entry={selectedEntry}
+        categories={categories}
+        onSave={handleSaveEntry}
+        onAddTag={addTagToEntry}
+        onRemoveTag={removeTagFromEntry}
+        onSetCategory={setEntryCategory}
+        onCreateCategory={createCategory}
+      />
     </div>
   );
 }

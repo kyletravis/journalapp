@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { JournalEntry, Folder } from '@/hooks/useLocalStorage';
+import { JournalEntry, Folder, Category } from '@/hooks/useLocalStorage';
 import { format } from 'date-fns';
 
 interface SidebarProps {
@@ -386,10 +386,29 @@ export default function Sidebar({
                   onClick={() => onSelectEntry(entry.id)}
                 >
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="font-semibold text-slate-800 truncate flex-1 pr-2">
-                      {entry.title || 'Untitled'}
-                    </h3>
-                    <div className="flex items-center gap-2 flex-shrink-0">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-slate-800 truncate pr-2">
+                        {entry.title || 'Untitled'}
+                      </h3>
+                      {entry.tags && entry.tags.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {entry.tags.slice(0, 2).map((tag) => (
+                            <span
+                              key={tag}
+                              className="inline-block text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded truncate"
+                            >
+                              #{tag}
+                            </span>
+                          ))}
+                          {entry.tags.length > 2 && (
+                            <span className="inline-block text-xs text-slate-500">
+                              +{entry.tags.length - 2}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2 flex-shrink-0 ml-2">
                       <select
                         onClick={(e) => e.stopPropagation()}
                         onChange={(e) => onMoveEntry(entry.id, e.target.value || undefined)}
