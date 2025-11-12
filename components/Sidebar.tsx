@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { JournalEntry, Folder } from '@/hooks/useLocalStorage';
 import { format } from 'date-fns';
 import SearchFilter from './SearchFilter';
@@ -27,6 +27,52 @@ interface SidebarProps {
   onStartDateChange: (date: string) => void;
   onEndDateChange: (date: string) => void;
   onResetFilters: () => void;
+}
+
+// Convert sentiment (-1 to 1) to a color gradient
+// Light mode: red (negative) -> gray (neutral) -> blue (positive)
+// Dark mode: Similar gradient but with adjusted colors for visibility
+function getSentimentColor(sentiment: number, isDark: boolean = false): string {
+  // Normalize sentiment from [-1, 1] to [0, 1]
+  const normalized = (sentiment + 1) / 2;
+
+  if (isDark) {
+    // Dark mode: Red to Blue gradient
+    // Negative: #DC2626 (red-600), Neutral: #6B7280 (gray-500), Positive: #3B82F6 (blue-500)
+    if (normalized < 0.5) {
+      // Red to Gray (negative to neutral)
+      const t = normalized * 2; // 0 to 1
+      const r = Math.round(220 + (107 - 220) * t);
+      const g = Math.round(38 + (114 - 38) * t);
+      const b = Math.round(38 + (128 - 38) * t);
+      return `rgb(${r}, ${g}, ${b})`;
+    } else {
+      // Gray to Blue (neutral to positive)
+      const t = (normalized - 0.5) * 2; // 0 to 1
+      const r = Math.round(107 + (59 - 107) * t);
+      const g = Math.round(114 + (130 - 114) * t);
+      const b = Math.round(128 + (246 - 128) * t);
+      return `rgb(${r}, ${g}, ${b})`;
+    }
+  } else {
+    // Light mode: Red to Blue gradient
+    // Negative: #EF4444 (red-500), Neutral: #9CA3AF (gray-400), Positive: #3B82F6 (blue-500)
+    if (normalized < 0.5) {
+      // Red to Gray (negative to neutral)
+      const t = normalized * 2; // 0 to 1
+      const r = Math.round(239 + (156 - 239) * t);
+      const g = Math.round(68 + (163 - 68) * t);
+      const b = Math.round(68 + (175 - 68) * t);
+      return `rgb(${r}, ${g}, ${b})`;
+    } else {
+      // Gray to Blue (neutral to positive)
+      const t = (normalized - 0.5) * 2; // 0 to 1
+      const r = Math.round(156 + (59 - 156) * t);
+      const g = Math.round(163 + (130 - 163) * t);
+      const b = Math.round(175 + (246 - 175) * t);
+      return `rgb(${r}, ${g}, ${b})`;
+    }
+  }
 }
 
 export default function Sidebar({
@@ -57,6 +103,25 @@ export default function Sidebar({
   const [renamingFolderId, setRenamingFolderId] = useState<string | null>(null);
   const [renamingFolderName, setRenamingFolderName] = useState('');
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set());
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // Detect dark mode
+  useEffect(() => {
+    const checkDarkMode = () => {
+      setIsDarkMode(document.documentElement.classList.contains('dark'));
+    };
+
+    checkDarkMode();
+
+    // Watch for theme changes
+    const observer = new MutationObserver(checkDarkMode);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   const handleCreateFolder = () => {
     if (newFolderName.trim()) {
@@ -414,14 +479,20 @@ export default function Sidebar({
               {filteredEntries.map((entry) => (
                 <div
                   key={entry.id}
-                  className={`group relative p-4 rounded-lg cursor-pointer transition-all duration-200 ${
+                  className={`group relative rounded-lg cursor-pointer transition-all duration-200 overflow-hidden ${
                     selectedEntryId === entry.id
                       ? 'bg-white dark:bg-slate-800 shadow-md ring-2 ring-blue-500 dark:ring-blue-400'
                       : 'bg-white/50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 hover:shadow-md'
                   }`}
                   onClick={() => onSelectEntry(entry.id)}
                 >
-                  <div className="flex justify-between items-start mb-2">
+                  {/* Sentiment gradient bar */}
+                  <div
+                    className="h-1 w-full"
+                    style={{ backgroundColor: getSentimentColor(entry.sentiment || 0, isDarkMode) }}
+                  />
+                  <div className="p-4">
+                    <div className="flex justify-between items-start mb-2">
                     <h3 className="font-semibold text-slate-800 dark:text-slate-100 truncate flex-1 pr-2">
                       {entry.title || 'Untitled'}
                     </h3>
@@ -465,12 +536,13 @@ export default function Sidebar({
                       </button>
                     </div>
                   </div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    {format(new Date(entry.updatedAt), 'MMM d, yyyy')}
-                  </p>
-                  <p className="text-sm text-slate-600 dark:text-slate-400 mt-2 line-clamp-2">
-                    {entry.content.substring(0, 100) || 'No content'}
-                  </p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      {format(new Date(entry.updatedAt), 'MMM d, yyyy')}
+                    </p>
+                    <p className="text-sm text-slate-600 dark:text-slate-400 mt-2 line-clamp-2">
+                      {entry.content.substring(0, 100) || 'No content'}
+                    </p>
+                  </div>
                 </div>
               ))}
             </div>

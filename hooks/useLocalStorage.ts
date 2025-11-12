@@ -7,12 +7,50 @@ export interface JournalEntry {
   createdAt: string;
   updatedAt: string;
   folderId?: string; // Optional folder ID
+  sentiment?: number; // -1 (negative) to 1 (positive)
 }
 
 export interface Folder {
   id: string;
   name: string;
   createdAt: string;
+}
+
+// Sentiment analysis function for automatic color coding
+function analyzeSentiment(text: string): number {
+  const positiveWords = [
+    'happy', 'good', 'great', 'wonderful', 'excellent', 'amazing', 'awesome',
+    'love', 'loved', 'fantastic', 'brilliant', 'perfect', 'beautiful', 'grateful',
+    'thankful', 'blessed', 'joy', 'joyful', 'excited', 'proud', 'success',
+    'accomplished', 'brilliant', 'delighted', 'pleased', 'wonderful', 'great',
+    'awesome', 'superb', 'outstanding', 'epic', 'incredible', 'wonderful'
+  ];
+
+  const negativeWords = [
+    'sad', 'bad', 'terrible', 'awful', 'horrible', 'hate', 'hated', 'angry',
+    'frustrated', 'disappointed', 'depressed', 'miserable', 'anxious', 'worried',
+    'stressed', 'scared', 'fear', 'afraid', 'failed', 'failure', 'waste', 'lost',
+    'struggle', 'pain', 'hurt', 'annoyed', 'upset', 'useless', 'stupid', 'awful',
+    'disgusting', 'pathetic', 'difficult', 'crisis'
+  ];
+
+  const lowerText = text.toLowerCase();
+  const words = lowerText.match(/\b\w+\b/g) || [];
+
+  let positiveCount = 0;
+  let negativeCount = 0;
+
+  words.forEach((word) => {
+    if (positiveWords.includes(word)) positiveCount++;
+    if (negativeWords.includes(word)) negativeCount++;
+  });
+
+  const totalSentimentWords = positiveCount + negativeCount;
+  if (totalSentimentWords === 0) return 0; // Neutral if no sentiment words found
+
+  // Calculate sentiment score between -1 and 1
+  const sentiment = (positiveCount - negativeCount) / totalSentimentWords;
+  return Math.max(-1, Math.min(1, sentiment));
 }
 
 export function useLocalStorage() {
@@ -60,16 +98,20 @@ export function useLocalStorage() {
   }, [folders, isLoaded]);
 
   const saveEntry = (entry: JournalEntry) => {
+    // Compute sentiment based on title and content
+    const sentiment = analyzeSentiment(entry.title + ' ' + entry.content);
+    const entryWithSentiment = { ...entry, sentiment };
+
     setEntries((prev) => {
       const existingIndex = prev.findIndex((e) => e.id === entry.id);
       if (existingIndex >= 0) {
         // Update existing entry
         const updated = [...prev];
-        updated[existingIndex] = entry;
+        updated[existingIndex] = entryWithSentiment;
         return updated;
       } else {
         // Add new entry
-        return [entry, ...prev];
+        return [entryWithSentiment, ...prev];
       }
     });
   };
